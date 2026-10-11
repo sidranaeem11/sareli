@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #0B0912;
+  color: #F5F3FA;
+}
+
+/* Hero ke peeche halka blue glow */
+.hero-glow {
+  background:
+    radial-gradient(60% 80% at 75% 40%, rgba(59,130,246,0.22), transparent 70%),
+    radial-gradient(40% 60% at 10% 100%, rgba(29,78,216,0.18), transparent 70%);
+}
+
+:focus-visible { outline: 2px solid #60A5FA; outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+}
