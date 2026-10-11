@@ -22,3 +22,7 @@ body {
   html { scroll-behavior: auto; }
   * { transition: none !important; animation: none !important; }
 }
+:root {
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
+}

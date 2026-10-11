@@ -1,17 +1,8 @@
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, Manrope } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/lib/cart';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
-const display = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-display',
-});
-const body = Manrope({ subsets: ['latin'], variable: '--font-body' });
 
 export const metadata: Metadata = {
   title: 'Sareli | Premium Beauty Tools',
@@ -22,7 +13,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${display.variable} ${body.variable} font-body antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap"
+        />
+      </head>
+      <body className="font-body antialiased">
         <CartProvider>
           <Header />
           {children}
