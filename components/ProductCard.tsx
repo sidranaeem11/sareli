@@ -2,10 +2,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Sparkles, Star } from 'lucide-react';
 import type { Product } from '@/lib/data';
-import { rs } from '@/lib/format';
+import { parseSizes, rs } from '@/lib/format';
 import AddToCartButton from './AddToCartButton';
 
 export default function ProductCard({ p }: { p: Product }) {
+  const needsSize = parseSizes(p.sizes).length > 0;
+
   return (
     <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-accent/30 bg-card transition-shadow hover:shadow-glow">
       {p.badge && (
@@ -32,7 +34,16 @@ export default function ProductCard({ p }: { p: Product }) {
             <Star size={12} className="fill-accent text-accent" aria-hidden />
             {p.rating} ({p.reviews})
           </span>
-          <AddToCartButton product={p} />
+          {needsSize ? (
+            <Link
+              href={`/product/${p.id}`}
+              className="rounded-full border border-accent/50 px-3 py-1.5 text-xs text-accent-light transition-colors hover:bg-accent hover:text-white"
+            >
+              Select size
+            </Link>
+          ) : (
+            <AddToCartButton product={p} />
+          )}
         </div>
       </div>
     </div>

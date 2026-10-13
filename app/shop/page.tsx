@@ -1,33 +1,55 @@
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
-import { getCategories, getProducts } from '@/lib/data';
+import { getCategories, getProducts, type Section } from '@/lib/data';
 
 export const metadata = { title: 'Shop | Sareli' };
 
 export default async function Shop({
   searchParams,
 }: {
-  searchParams: { category?: string; q?: string };
+  searchParams: { category?: string; q?: string; section?: string };
 }) {
   const { category, q } = searchParams;
-  const [categories, products] = await Promise.all([getCategories(), getProducts({ category, q })]);
+  const section: Section | undefined =
+    searchParams.section === 'apparel' ? 'apparel' : searchParams.section === 'beauty' ? 'beauty' : undefined;
+
+  const [categories, products] = await Promise.all([
+    getCategories(section),
+    getProducts({ category, q, section }),
+  ]);
   const active = categories.find((c) => c.id === category);
+
+  const href = (cat?: string) => {
+    const p = new URLSearchParams();
+    if (section) p.set('section', section);
+    if (cat) p.set('category', cat);
+    const s = p.toString();
+    return s ? `/shop?${s}` : '/shop';
+  };
 
   const chip = (on: boolean) =>
     `whitespace-nowrap rounded-full border px-4 py-1.5 text-sm transition-colors ${
       on ? 'border-accent bg-accent/15 text-accent-light' : 'border-line text-cream/80 hover:border-accent/50'
     }`;
 
+  const title = q
+    ? `Results for "${q}"`
+    : active
+    ? active.name
+    : section === 'apparel'
+    ? 'Jackets & Hoodies'
+    : section === 'beauty'
+    ? 'Beauty tools'
+    : 'All products';
+
   return (
     <main className="mx-auto max-w-7xl px-5 py-12">
-      <h1 className="font-display text-4xl font-medium">
-        {q ? `Results for "${q}"` : active ? active.name : 'All products'}
-      </h1>
+      <h1 className="font-display text-4xl font-medium">{title}</h1>
 
       <div className="mt-6 flex gap-2 overflow-x-auto pb-2">
-        <Link href="/shop" className={chip(!category)}>All</Link>
+        <Link href={href()} className={chip(!category)}>All</Link>
         {categories.map((c) => (
-          <Link key={c.id} href={`/shop?category=${c.id}`} className={chip(c.id === category)}>
+          <Link key={c.id} href={href(c.id)} className={chip(c.id === category)}>
             {c.name}
           </Link>
         ))}

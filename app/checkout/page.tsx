@@ -56,6 +56,7 @@ export default function Checkout() {
       items.map((i) => ({
         order_id: id,
         product_id: i.id,
+        size: i.size,
         product_name: i.name,
         price: i.price,
         qty: i.qty,
@@ -123,8 +124,8 @@ export default function Checkout() {
           <h2 className="font-display text-2xl">Your order</h2>
           <ul className="mt-4 space-y-2 text-sm">
             {items.map((i) => (
-              <li key={i.id} className="flex justify-between gap-3">
-                <span className="text-muted">{i.name} x {i.qty}</span>
+              <li key={i.key} className="flex justify-between gap-3">
+                <span className="text-muted">{i.name}{i.size ? ` (${i.size})` : ''} x {i.qty}</span>
                 <span>{rs(i.price * i.qty)}</span>
               </li>
             ))}

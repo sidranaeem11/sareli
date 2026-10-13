@@ -2,15 +2,17 @@ import Hero from '@/components/Hero';
 import Categories from '@/components/Categories';
 import Features from '@/components/Features';
 import BestSellers from '@/components/BestSellers';
+import ApparelSection from '@/components/ApparelSection';
 import Story from '@/components/Story';
-import { getBestSellers, getCategories, getHeroImage } from '@/lib/data';
+import { getApparel, getBestSellers, getCategories, getHeroImage } from '@/lib/data';
 
 export const revalidate = 60; // Supabase se data har 60 second baad refresh
 
 export default async function Home() {
-  const [categories, products, heroImage] = await Promise.all([
-    getCategories(),
+  const [categories, products, apparel, heroImage] = await Promise.all([
+    getCategories('beauty'),
     getBestSellers(),
+    getApparel(4),
     getHeroImage(),
   ]);
 
@@ -20,6 +22,7 @@ export default async function Home() {
       <Categories categories={categories} />
       <Features />
       <BestSellers products={products} />
+      <ApparelSection products={apparel} />
       <Story />
     </main>
   );

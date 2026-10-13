@@ -22,7 +22,7 @@ function Thumb({ url, size = 'h-12 w-12' }: { url: string | null; size?: string 
 
 /* ------------------------------ Orders ------------------------------ */
 
-type OrderItem = { id: string; product_name: string; price: number; qty: number };
+type OrderItem = { id: string; product_name: string; price: number; qty: number; size?: string | null };
 type Order = {
   id: string; customer_name: string; phone: string; city: string; address: string;
   notes: string | null; payment_method: string; total: number; status: string;
@@ -71,7 +71,7 @@ export function OrdersPanel() {
             </div>
           </div>
           <ul className="mt-3 border-t border-line pt-3 text-sm text-muted">
-            {o.order_items.map((i) => <li key={i.id}>{i.product_name} x {i.qty} &mdash; {rs(i.price * i.qty)}</li>)}
+            {o.order_items.map((i) => <li key={i.id}>{i.product_name}{i.size ? ` (${i.size})` : ''} x {i.qty} &mdash; {rs(i.price * i.qty)}</li>)}
           </ul>
         </li>
       ))}
@@ -118,10 +118,13 @@ export function ProductsPanel() {
         await deleteImage(image_url);
         image_url = null;
       }
+      const cat = categories.find((c) => c.id === String(f.get('category')));
       const row = {
         name: String(f.get('name')).trim(),
         price: Number(f.get('price')),
         category_id: String(f.get('category')) || null,
+        section: cat?.section ?? 'beauty',
+        sizes: String(f.get('sizes') || '').trim() || null,
         badge: String(f.get('badge') || '').trim() || null,
         description: String(f.get('description') || '').trim() || null,
         is_best_seller: f.get('best') === 'on',
@@ -157,9 +160,10 @@ export function ProductsPanel() {
         <input name="price" required type="number" min={1} placeholder="Price (Rs.)" defaultValue={editing?.price} className={input} />
         <select name="category" defaultValue={editing?.category_id ?? ''} className={input}>
           <option value="">Category chuno</option>
-          {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          {categories.map((c) => <option key={c.id} value={c.id}>{c.name}{c.section === 'apparel' ? ' (Apparel)' : ''}</option>)}
         </select>
         <input name="badge" placeholder="Badge (e.g. New, 20% OFF)" defaultValue={editing?.badge ?? ''} className={input} />
+        <input name="sizes" placeholder="Sizes: S,M,L,XL (sirf kapron ke liye, warna khali)" defaultValue={editing?.sizes ?? ''} className={input} />
         <textarea name="description" rows={3} placeholder="Description" defaultValue={editing?.description ?? ''} className={input} />
         {editing?.image_url && (
           <div className="flex items-center gap-3">
@@ -242,6 +246,7 @@ export function CategoriesPanel() {
       const row = {
         name: String(f.get('name')).trim(),
         tagline: String(f.get('tagline') || '').trim() || null,
+        section: String(f.get('section') || 'beauty'),
         sort_order: Number(f.get('sort_order') || 0),
         image_url,
       };
@@ -273,6 +278,10 @@ export function CategoriesPanel() {
         <h2 className="font-display text-2xl">{editing ? 'Edit category' : 'Add category'}</h2>
         <input name="name" required placeholder="Category name" defaultValue={editing?.name} className={input} />
         <input name="tagline" placeholder="Tagline (e.g. Shape Your Brows)" defaultValue={editing?.tagline ?? ''} className={input} />
+        <select name="section" defaultValue={editing?.section ?? 'beauty'} className={input}>
+          <option value="beauty">Beauty tools</option>
+          <option value="apparel">Jackets &amp; Hoodies (Apparel)</option>
+        </select>
         <input name="sort_order" type="number" placeholder="Order (1, 2, 3...)" defaultValue={editing?.sort_order ?? cats.length + 1} className={input} />
         {editing?.image_url && (
           <div className="flex items-center gap-3">
@@ -303,7 +312,7 @@ export function CategoriesPanel() {
             <Thumb url={c.image_url} />
             <div className="flex-1">
               <p className="text-sm font-medium">{c.name}</p>
-              <p className="text-xs text-muted">{c.tagline}</p>
+              <p className="text-xs text-muted">{c.tagline}{c.section === 'apparel' ? ' · Apparel' : ''}</p>
             </div>
             <button onClick={() => { setEditing(c); setMsg(''); }} className="text-sm text-accent-light hover:underline">Edit</button>
             <button onClick={() => remove(c)} className="text-sm text-red-400 hover:underline">Delete</button>

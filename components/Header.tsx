@@ -9,6 +9,7 @@ import { SITE } from '@/lib/config';
 const links = [
   { label: 'Home', href: '/' },
   { label: 'Shop', href: '/shop' },
+  { label: 'Jackets & Hoodies', href: '/shop?section=apparel' },
   { label: 'Categories', href: '/#categories' },
   { label: 'About Us', href: '/about' },
   { label: 'Contact', href: '/contact' },

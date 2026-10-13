@@ -32,7 +32,7 @@ export default function CartPage() {
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
         <ul className="divide-y divide-line rounded-2xl border border-line bg-card">
           {items.map((i) => (
-            <li key={i.id} className="flex items-center gap-4 p-4">
+            <li key={i.key} className="flex items-center gap-4 p-4">
               <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-line/50">
                 {i.image_url ? (
                   <Image src={i.image_url} alt={i.name} fill sizes="80px" className="object-contain p-2" />
@@ -42,14 +42,15 @@ export default function CartPage() {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium">{i.name}</p>
+                {i.size && <p className="text-xs text-muted">Size: {i.size}</p>}
                 <p className="text-sm text-accent-light">{rs(i.price)}</p>
                 <div className="mt-2 flex items-center gap-3">
                   <div className="flex items-center rounded-full border border-line">
-                    <button aria-label="Decrease quantity" onClick={() => setQty(i.id, i.qty - 1)} className="p-2 hover:text-accent-light"><Minus size={12} /></button>
+                    <button aria-label="Decrease quantity" onClick={() => setQty(i.key, i.qty - 1)} className="p-2 hover:text-accent-light"><Minus size={12} /></button>
                     <span className="w-6 text-center text-sm">{i.qty}</span>
-                    <button aria-label="Increase quantity" onClick={() => setQty(i.id, i.qty + 1)} className="p-2 hover:text-accent-light"><Plus size={12} /></button>
+                    <button aria-label="Increase quantity" onClick={() => setQty(i.key, i.qty + 1)} className="p-2 hover:text-accent-light"><Plus size={12} /></button>
                   </div>
-                  <button onClick={() => remove(i.id)} aria-label={`Remove ${i.name}`} className="text-muted hover:text-red-400">
+                  <button onClick={() => remove(i.key)} aria-label={`Remove ${i.name}`} className="text-muted hover:text-red-400">
                     <Trash2 size={16} />
                   </button>
                 </div>
